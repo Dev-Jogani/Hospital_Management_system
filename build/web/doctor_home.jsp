@@ -1,10 +1,122 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="jakarta.servlet.http.*, jakarta.servlet.*, java.sql.*, com.hospital.DatabaseConnection" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Doctor Home</title>
+    <title>Doctor Dashboard</title>
 </head>
 <body>
     <h2>Welcome, Doctor!</h2>
-    <p>This is your dashboard where you can manage appointments, view patients, etc.</p>
-    <a href="LogoutServlet">Logout</a>
+
+    <% 
+        // Retrieve session attributes
+        if (session != null) {
+            String doctorEmail = (String) session.getAttribute("email");
+
+            if (doctorEmail != null) {
+                String doctorName = null;
+                String doctorSpecialization = null;
+                Connection conn = null;
+                PreparedStatement pst = null;
+                ResultSet rs = null;
+
+                try {
+                    // Use the DatabaseConnection class to get the connection
+                    conn = DatabaseConnection.getConnection();
+
+                    // Query to fetch doctor details based on email
+                    String sql = "SELECT name, specialization FROM doctors WHERE email = ?";
+                    pst = conn.prepareStatement(sql);
+                    pst.setString(1, doctorEmail);
+
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
+                        doctorName = rs.getString("name");
+                        doctorSpecialization = rs.getString("specialization");
+                    }
+
+                    if (doctorName != null && doctorSpecialization != null) {
+    %>
+                        <p>Doctor's Name: <%= doctorName %></p>
+                        <p>Email: <%= doctorEmail %></p>
+                        <p>Specialization: <%= doctorSpecialization %></p>
+
+                        <h3>Your Appointments</h3>
+                        <table border="1">
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Patient ID</th>
+                                <th>Disease</th>
+                                <th>Appointment Date</th>
+                                <th>Status</th>
+                                <th>Update Status</th>
+                            </tr>
+                            <%
+                                // Query to retrieve appointments based on doctor's specialization
+                                String appointmentSql = "SELECT appointment_id, patient_name, email, disease, appointment_date, status FROM appointments WHERE disease = ?";
+                                PreparedStatement appointmentPst = conn.prepareStatement(appointmentSql);
+                                appointmentPst.setString(1, doctorSpecialization);
+                                ResultSet appointmentRs = appointmentPst.executeQuery();
+
+                                while (appointmentRs.next()) {
+                                    int appointmentId = appointmentRs.getInt("appointment_id");
+                                    String patientName = appointmentRs.getString("patient_name");
+                                    String patientEmail = appointmentRs.getString("email");
+                                    String disease = appointmentRs.getString("disease");
+                                    java.sql.Date appointmentDate = appointmentRs.getDate("appointment_date");
+                                    String status = appointmentRs.getString("status");
+                            %>
+                                    <tr>
+                                        <td><%= patientName %></td>
+                                        <td><%= patientEmail %></td>
+                                        <td><%= disease %></td>
+                                        <td><%= appointmentDate %></td>
+                                        <td><%= status %></td>
+                                        <td>
+                                            <!-- Form for updating the status -->
+                                            <form action="UpdateAppointmentStatusServlet" method="post">
+                                                <input type="hidden" name="appointmentId" value="<%= appointmentId %>">
+                                                <input type="hidden" name="patientEmail" value="<%= patientEmail %>">
+                                                <select name="status">
+                                                    <option value="pending" <%= "pending".equals(status) ? "selected" : "" %>>Pending</option>
+                                                    <option value="confirmed" <%= "confirmed".equals(status) ? "selected" : "" %>>Confirmed</option>
+                                                    <option value="cancelled" <%= "cancelled".equals(status) ? "selected" : "" %>>Cancelled</option>
+                                                </select>
+                                                <button type="submit">Update</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                            <%
+                                }
+                                appointmentRs.close(); // Close the appointment result set
+                                appointmentPst.close(); // Close the prepared statement
+                            %>
+                        </table>
+                <%  
+                    } else {
+                %>
+                        <p>Doctor information not found. Please login again.</p>
+                <%  
+                    }
+                } catch (Exception e) {
+                    out.println("<p>Error retrieving appointments. Please try again later.</p>");
+                    e.printStackTrace();
+                } finally {
+                    // Close resources
+                    try {
+                        if (rs != null) rs.close();
+                        if (pst != null) pst.close();
+                        if (conn != null && !conn.isClosed()) conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();  // Handle resource closing exceptions
+                    }
+                }
+            } else {
+                out.println("<p>Session has expired. Please login again.</p>");
+            }
+        }
+    %>
+
+    <p><a href="LogoutServlet">Logout</a></p>
 </body>
 </html>

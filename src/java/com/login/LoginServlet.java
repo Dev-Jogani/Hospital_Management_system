@@ -33,6 +33,7 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("email", email);
                 session.setAttribute("role", role);
+       
 
                 // Redirect to appropriate home page based on role
                 if (role.equals("doctor")) {

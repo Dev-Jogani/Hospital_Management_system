@@ -42,7 +42,7 @@ public class PatientRegisterServlet extends HttpServlet {
             patientStmt.setString(6, medicalHistory);
             patientStmt.executeUpdate();
 
-            response.sendRedirect("patient_login.jsp");
+            response.sendRedirect("appointmentBooking.jsp");
         } catch (SQLException e) {
             response.getWriter().println("Error: " + e.getMessage());
         }

@@ -6,31 +6,29 @@
 <body>
     <h1>Welcome to the Hospital Management System</h1>
 
+    <!-- Display success or error message from previous action -->
+    <%
+        String message = (String) request.getAttribute("message");
+        if (message != null) {
+    %>
+        <p style="color: green;"><%= message %></p>
+    <%
+        }
+    %>
+
+    <!-- Login Form Section -->
+    <h2>Login</h2>
+    <form action="login.jsp" method="get">
+        <input type="submit" value="Go to Login Page">
+    </form>
+
+    <br>
+
     <p>Please select your role:</p>
-
-    <!-- User Side: Book Appointment -->
-    <form action="appointmentBooking.jsp" method="get">
-        <input type="submit" value="User - Book Appointment">
-    </form>
-
-    <br>
-
-    <!-- User Side: View Appointments -->
-    <form action="viewAppointments.jsp" method="get">
-        <input type="submit" value="User - View Appointments">
-    </form>
-
-    <br>
-
-    <!-- Admin Side: Manage Appointments -->
-    <form action="adminManageAppointment.jsp" method="get">
-        <input type="submit" value="Admin - Manage Appointments">
-    </form>
-
     <br>
 
     <!-- Admin Side: Manage Rooms -->
-    <form action="AdminManageRooms.jsp" method="get">
+    <form action="RoomAssignmentServlet" method="get">
         <input type="submit" value="Admin - Manage Rooms">
     </form>
 
@@ -42,6 +40,5 @@
         <input type="number" id="patientId" name="patientId" required>
         <input type="submit" value="Search Room">
     </form>
-
 </body>
 </html>

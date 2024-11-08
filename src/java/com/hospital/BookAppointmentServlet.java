@@ -13,25 +13,24 @@ import java.sql.SQLException;
 
 @WebServlet("/BookAppointmentServlet")
 public class BookAppointmentServlet extends HttpServlet {
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String patientName = request.getParameter("patientName");
+        String patientName = request.getParameter("patient_name");
         String email = request.getParameter("email");
         String disease = request.getParameter("disease");
-        String doctorEmail = request.getParameter("doctorEmail");
-        String appointmentDate = request.getParameter("appointmentDate");
+        String appointmentDate = request.getParameter("appointment_date");
 
         try (Connection con = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO Appointments (patient_name, email, disease, doctor_email, appointment_date, status) " +
-                           "VALUES (?, ?, ?, ?, ?, 'pending')";
+            String query = "INSERT INTO appointments (patient_name, email, disease, appointment_date, status) "
+                    + "VALUES (?, ?, ?, ?, 'pending')";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, patientName);
             pst.setString(2, email);
             pst.setString(3, disease);
-            pst.setString(4, doctorEmail);
-            pst.setString(5, appointmentDate);
-            
+            pst.setString(4, appointmentDate);
+
             int result = pst.executeUpdate();
 
             if (result > 0) {
@@ -41,9 +40,11 @@ public class BookAppointmentServlet extends HttpServlet {
             }
             pst.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error while booking appointment: " + e.getMessage());
+            e.printStackTrace(); // Outputs the detailed stack trace to the console
             request.setAttribute("message", "An error occurred while booking the appointment.");
         }
-        request.getRequestDispatcher("/jsp/appointmentBooking.jsp").forward(request, response);
+
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }

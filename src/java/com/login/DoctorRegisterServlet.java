@@ -44,7 +44,7 @@ public class DoctorRegisterServlet extends HttpServlet {
             doctorStmt.setString(7, gender);
             doctorStmt.executeUpdate();
 
-            response.sendRedirect("doctor_login.jsp");
+            response.sendRedirect("doctor_home.jsp");
         } catch (SQLException e) {
             response.getWriter().println("Error: " + e.getMessage());
         }

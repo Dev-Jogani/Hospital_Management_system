@@ -8,7 +8,7 @@
     <h1>Book an Appointment</h1>
     <form action="BookAppointmentServlet" method="post">
         <label for="patientName">Patient Name:</label>
-        <input type="text" id="patientName" name="patientName" required><br><br>
+        <input type="text" id="patient_name" name="patient_name" required><br><br>
         
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required><br><br>
@@ -16,11 +16,8 @@
         <label for="disease">Disease:</label>
         <input type="text" id="disease" name="disease" required><br><br>
         
-        <label for="doctorEmail">Doctor's Email:</label>
-        <input type="email" id="doctorEmail" name="doctorEmail"><br><br>
-        
         <label for="appointmentDate">Appointment Date:</label>
-        <input type="datetime-local" id="appointmentDate" name="appointmentDate" required><br><br>
+        <input type="datetime-local" id="appointment_date" name="appointment_date" required><br><br>
         
         <input type="submit" value="Book Appointment">
     </form>

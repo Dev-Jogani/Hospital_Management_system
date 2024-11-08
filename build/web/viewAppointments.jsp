@@ -19,7 +19,7 @@
         String email = request.getParameter("email");
         if (email != null) {
             try (Connection con = DatabaseConnection.getConnection()) {
-                String query = "SELECT * FROM Appointments WHERE email = ?";
+                String query = "SELECT * FROM appointments WHERE email = ?";
                 PreparedStatement pst = con.prepareStatement(query);
                 pst.setString(1, email);
                 ResultSet rs = pst.executeQuery();
@@ -31,7 +31,6 @@
                             <th>Appointment ID</th>
                             <th>Patient Name</th>
                             <th>Disease</th>
-                            <th>Doctor Email</th>
                             <th>Appointment Date</th>
                             <th>Status</th>
                         </tr>
@@ -39,7 +38,6 @@
                             <td><%= rs.getInt("appointment_id") %></td>
                             <td><%= rs.getString("patient_name") %></td>
                             <td><%= rs.getString("disease") %></td>
-                            <td><%= rs.getString("doctor_email") %></td>
                             <td><%= rs.getString("appointment_date") %></td>
                             <td><%= rs.getString("status") %></td>
                         </tr>

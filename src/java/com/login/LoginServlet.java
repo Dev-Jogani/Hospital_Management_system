@@ -1,4 +1,5 @@
 package com.login;
+
 import com.hospital.DatabaseConnection;
 import java.io.IOException;
 import java.sql.Connection;
@@ -33,18 +34,33 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("email", email);
                 session.setAttribute("role", role);
-       
 
                 // Redirect to appropriate home page based on role
-                if (role.equals("doctor")) {
-                    response.sendRedirect("doctor_home.jsp");
-                } else if (role.equals("patient")) {
-                    response.sendRedirect("patient_home.jsp");
+                switch (role) {
+                    case "doctor":
+                        response.sendRedirect("doctor_home.jsp");
+                        break;
+                    case "patient":
+                        response.sendRedirect("patient_home.jsp");
+                        break;
+                    case "receptionist":
+                        response.sendRedirect("RoomAssignmentServlet");
+                        break;
+                    case "pharmacy":
+                        response.sendRedirect("pharmacy_home.jsp");
+                        break;
+                    default:
+                        response.sendRedirect("login.jsp?error=Invalid Role");
+                        break;
                 }
             } else {
                 // If login fails, redirect back to login page with error
                 response.sendRedirect("login.jsp?error=Invalid Credentials");
             }
+
+            rs.close();
+            ps.close();
+            con.close();
         } catch (SQLException e) {
             response.getWriter().println("Error: " + e.getMessage());
         }

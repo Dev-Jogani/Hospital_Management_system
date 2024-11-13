@@ -21,24 +21,6 @@
     <form action="login.jsp" method="get">
         <input type="submit" value="Go to Login Page">
     </form>
-
-    <br>
-
-    <p>Please select your role:</p>
-    <br>
-
-    <!-- Admin Side: Manage Rooms -->
-    <form action="RoomAssignmentServlet" method="get">
-        <input type="submit" value="Admin - Manage Rooms">
-    </form>
-
-    <br>
-
-    <!-- Admin Side: Search Room by Patient -->
-    <form action="SearchRoom.jsp" method="get">
-        <label for="patientId">Enter Patient ID to Find Room:</label>
-        <input type="number" id="patientId" name="patientId" required>
-        <input type="submit" value="Search Room">
-    </form>
+ 
 </body>
 </html>

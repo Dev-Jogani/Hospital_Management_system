@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Login</title>
@@ -10,6 +11,14 @@
 
         <label>Password:</label>
         <input type="password" name="password" required><br>
+
+        <label>Role:</label>
+        <select name="role" required>
+            <option value="doctor">Doctor</option>
+            <option value="patient">Patient</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="pharmacy">Pharmacy</option>
+        </select><br>
 
         <input type="submit" value="Login">
     </form>

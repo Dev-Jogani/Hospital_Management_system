@@ -2,26 +2,29 @@
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h2>Register as:</h2>
+    <div class="register-container">
+        <h2>Register as:</h2>
 
-    <!-- Form to select role -->
-    <form action="register.jsp" method="get">
-        <button type="submit" name="role" value="doctor">Doctor</button>
-        <button type="submit" name="role" value="patient">Patient</button>
-    </form>
+        <!-- Form to select role -->
+        <form action="register.jsp" method="get">
+            <button type="submit" name="role" value="doctor">Doctor</button>
+            <button type="submit" name="role" value="patient">Patient</button>
+        </form>
 
-    <%
-        // Role processing logic
-        String role = request.getParameter("role");
-        if (role != null) {
-            if (role.equals("doctor")) {
-                response.sendRedirect("doctor_register.jsp");
-            } else if (role.equals("patient")) {
-                response.sendRedirect("patient_register.jsp");
+        <%
+            // Role processing logic
+            String role = request.getParameter("role");
+            if (role != null) {
+                if (role.equals("doctor")) {
+                    response.sendRedirect("doctor_register.jsp");
+                } else if (role.equals("patient")) {
+                    response.sendRedirect("patient_register.jsp");
+                }
             }
-        }
-    %>
+        %>
+    </div>
 </body>
 </html>

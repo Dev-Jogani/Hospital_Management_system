@@ -44,10 +44,10 @@ public class LoginServlet extends HttpServlet {
                         response.sendRedirect("patient_home.jsp");
                         break;
                     case "receptionist":
-                        response.sendRedirect("RoomAssignmentServlet");
+                        response.sendRedirect("receptionist.jsp");
                         break;
                     case "pharmacy":
-                        response.sendRedirect("pharmacy_home.jsp");
+                        response.sendRedirect("medicineDashboard.jsp");
                         break;
                     default:
                         response.sendRedirect("login.jsp?error=Invalid Role");

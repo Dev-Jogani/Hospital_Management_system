@@ -1,50 +1,45 @@
 package com.hospital;
 
-import jakarta.servlet.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
-import java.io.*;
-import java.sql.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/UpdateAppointmentStatusServlet")
 public class UpdateAppointmentStatusServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        // Get the appointment ID and new status from the request
         int appointmentId = Integer.parseInt(request.getParameter("appointmentId"));
-        String patientEmail = request.getParameter("patientEmail");
         String newStatus = request.getParameter("status");
 
-        Connection conn = null;
-        PreparedStatement pst = null;
+        // Establish the database connection
+        try (Connection con = DatabaseConnection.getConnection()) {
+            // SQL query to update the status of the appointment
+            String updateQuery = "UPDATE appointments SET status = ? WHERE appointment_id = ?";
+            PreparedStatement pst = con.prepareStatement(updateQuery);
+            pst.setString(1, newStatus);       // Set the new status
+            pst.setInt(2, appointmentId);      // Set the appointment ID
+            int result = pst.executeUpdate();  // Execute the update
 
-        try {
-            // Get connection
-            conn = DatabaseConnection.getConnection();
-
-            // Update the appointment status
-            String sql = "UPDATE appointments SET status = ? WHERE appointment_id = ? OR email = ?";
-            pst = conn.prepareStatement(sql);
-            pst.setString(1, newStatus);
-            pst.setInt(2, appointmentId);
-            pst.setString(3, patientEmail);
-
-            int rowsUpdated = pst.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                response.sendRedirect("doctor_home.jsp");  // Redirect to the dashboard after update
+            // Check if the update was successful
+            if (result > 0) {
+                request.setAttribute("message", "Appointment status updated successfully!");
             } else {
-                response.getWriter().println("Failed to update the appointment status.");
+                request.setAttribute("message", "Failed to update appointment status.");
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Error updating status: " + e.getMessage());
-        } finally {
-            try {
-                if (pst != null) pst.close();
-                if (conn != null && !conn.isClosed()) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            request.setAttribute("message", "An error occurred while updating the status.");
         }
+
+        // Redirect back to the doctor dashboard after updating the status
+        request.getRequestDispatcher("/doctor_home.jsp").forward(request, response);
     }
 }
